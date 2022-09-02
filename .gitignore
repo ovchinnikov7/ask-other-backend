@@ -1,6 +1,8 @@
 # folders
 /build
-/env
+**/env
+__pycache__
+/.history
 
 # misc
 .DS_Store
