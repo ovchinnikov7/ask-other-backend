@@ -1,35 +1,39 @@
 from rest_framework import serializers, status
-from rest_framework.fields import empty
-from .models import User, Question, Survey, CompletedSurvey
+from rest_framework.validators import UniqueValidator
+from django.contrib.auth.password_validation import validate_password
+
+from .models import User, Question, Survey, SurveyResponse, Response, ResponseType, ResponseVariant
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'avatarLink', 'password']
+        fields = ['id', 'email', 'username', 'avatar_link', 'password', 'created_at', 'updated_at']
         extra_kwargs = {'password': {'write_only': True}}
 
+
+class RegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+
+    class Meta:
+        model = User
+        fields = ('email', 'username', 'password')
+
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
+        user = User.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email'],
+        )
 
-    def validate_empty_values(self, data):
-        if isinstance(data, User) or data.get('is_from_google'):
-            return True, data
+        user.set_password(validated_data['password'])
+        user.save()
 
-        return super().validate_empty_values(data)
-
-    def run_validation(self, data=empty):
-        (is_empty_value, data) = self.validate_empty_values(data)
-        if is_empty_value:
-            return data
-        value = self.to_internal_value(data)
-        self.run_validators(value)
-        return value
+        return user
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -44,7 +48,25 @@ class SurveySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CompletedSurveySerializer(serializers.ModelSerializer):
+class SurveyResponseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CompletedSurvey
+        model = SurveyResponse
+        fields = '__all__'
+
+
+class ResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Response
+        fields = '__all__'
+
+
+class ResponseTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResponseType
+        fields = '__all__'
+
+
+class ResponseVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResponseVariant
         fields = '__all__'
