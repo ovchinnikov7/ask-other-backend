@@ -20,7 +20,6 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             username=username,
-            is_staff=True,
             is_superuser=True
         )
         user.is_admin = True
