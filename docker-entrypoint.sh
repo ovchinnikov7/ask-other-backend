@@ -1,3 +1,4 @@
+#!/bin/bash
 python manage.py createsuperuser --email=admin@admin.com --noinput
 
 python manage.py makemigrations

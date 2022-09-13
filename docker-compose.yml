@@ -13,7 +13,7 @@ services:
     env_file:
       - .env
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "wait-for-it db:5432 -- python manage.py createsuperuser --email=super_admin@admin.com --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
@@ -24,4 +24,3 @@ services:
       - POSTGRES_PASSWORD=admin
     depends_on:
       - db
-#    entrypoint: ['sh', 'entrypoint.sh']

@@ -10,10 +10,6 @@ WORKDIR /code
 COPY . .
 
 RUN pip install -r requirements.txt
+RUN apt-get -q update && apt install wait-for-it
 
 WORKDIR /code/ask_others_root
-
-#WORKDIR ./ask_others_root
-#RUN chmod a+x entrypoint.sh
-
-#ENTRYPOINT ['sh', 'entrypoint.sh']
