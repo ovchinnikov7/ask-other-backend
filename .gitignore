@@ -4,6 +4,7 @@
 __pycache__
 /.history
 /data
+/.idea
 
 # misc
 .DS_Store
