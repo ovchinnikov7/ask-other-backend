@@ -7,7 +7,7 @@ from .managers import UserManager
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=50, unique=True)
-    avatar_link = models.TextField(null=True, blank=True)
+    avatar_link = models.ImageField(null=True, blank=True, upload_to='./static')
     created_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(null=True, blank=True)
 
