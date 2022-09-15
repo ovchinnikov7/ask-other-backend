@@ -1,6 +1,7 @@
 from rest_framework import filters, status, viewsets, authentication, permissions
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
+from rest_framework.parsers import MultiPartParser
 
 from .models import User, Question, Survey, SurveyResponse, Response, ResponseType, ResponseVariant
 from .serializers import (UserSerializer, RegisterSerializer, QuestionSerializer, SurveySerializer,
@@ -17,6 +18,7 @@ class RegisterView(CreateAPIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    parser_classes = (MultiPartParser, )
 
 
 class QuestionViewSet(viewsets.ModelViewSet):

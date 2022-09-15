@@ -1,9 +1,11 @@
 from rest_framework import routers
-from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .views import (UserViewSet, QuestionViewSet, SurveyViewSet,
                     SurveyResponseViewSet, ResponseViewSet,
                     ResponseTypeViewSet, ResponseVariantViewSet)
+
 
 router = routers.SimpleRouter(trailing_slash=True)
 router.register(r'users', UserViewSet)

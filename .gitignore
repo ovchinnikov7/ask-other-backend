@@ -5,6 +5,7 @@ __pycache__
 /.history
 /data
 /.idea
+ask_others_root/static
 
 # misc
 .DS_Store
