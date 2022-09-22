@@ -11,12 +11,14 @@ from .serializers import (UserSerializer, RegisterSerializer, QuestionSerializer
 
 
 class RegisterView(CreateAPIView):
+    """Registers new user with provided credentials."""
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
 
 class ProfileView(APIView):
+    """Gets user's profile data."""
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):

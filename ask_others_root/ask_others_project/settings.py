@@ -111,12 +111,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'api_key': {
+        'Bearer': {
             'type': 'apiKey',
-            'in': 'header',
-            'name': 'Authorization'
-        }
+            'name': 'Authorization',
+            'in': 'header'
+        },
     },
+    'USE_SESSION_AUTH': False,
+    'DISPLAY_OPERATION_ID': False,
 }
 
 LANGUAGE_CODE = 'en-us'

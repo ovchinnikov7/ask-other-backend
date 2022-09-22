@@ -13,12 +13,12 @@ from ask_others_app.views import RegisterView, ProfileView
 
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Ask Others (Swagger UI)",
-      default_version='1.0.0',
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
+    openapi.Info(
+        title="Ask Others (Swagger UI)",
+        default_version='1.0.0',
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
 )
 
 urlpatterns = [
