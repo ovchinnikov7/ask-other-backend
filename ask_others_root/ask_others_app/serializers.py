@@ -1,6 +1,7 @@
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from datetime import datetime
 
 from .models import User, Question, Survey, SurveyResponse, Response, ResponseType, ResponseVariant
 
@@ -28,6 +29,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
+            created_at=datetime.today(),
         )
 
         user.set_password(validated_data['password'])
@@ -46,6 +48,10 @@ class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
         fields = '__all__'
+
+    def create(self, validated_data):
+        survey = Survey.objects.create(**validated_data)
+        return survey
 
 
 class SurveyResponseSerializer(serializers.ModelSerializer):

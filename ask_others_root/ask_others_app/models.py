@@ -1,15 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
+
 from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=50, unique=True)
-    avatar_link = models.ImageField(null=True, blank=True, upload_to='./static')
-    created_at = models.DateTimeField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
+    avatar_link = models.ImageField(null=True, blank=True, upload_to='./static/avatars')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -23,8 +24,8 @@ class Survey(models.Model):
     author = models.ForeignKey(User, related_name='surveys', on_delete=models.CASCADE)
     title = models.TextField()
     description = models.TextField()
-    created_at = models.DateTimeField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
@@ -41,9 +42,9 @@ class Question(models.Model):
     survey = models.ForeignKey(Survey, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField()
     response_type = models.ForeignKey(ResponseType, on_delete=models.CASCADE)
-    attachment = models.FileField()
-    created_at = models.DateTimeField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
+    attachment = models.FileField(null=True, blank=True, upload_to='./static/attachments')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.text
@@ -60,8 +61,8 @@ class ResponseVariant(models.Model):
 class SurveyResponse(models.Model):
     survey = models.ForeignKey(Survey, related_name='survey_responses', on_delete=models.CASCADE)
     respondent = models.ForeignKey(User, related_name='survey_responses', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Response(models.Model):
@@ -69,5 +70,5 @@ class Response(models.Model):
     respondent = models.ForeignKey(SurveyResponse, related_name='responses', on_delete=models.CASCADE)
     variant_answer = models.ForeignKey(ResponseVariant, related_name='responses', on_delete=models.CASCADE)
     text_answer = models.TextField()
-    created_at = models.DateTimeField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

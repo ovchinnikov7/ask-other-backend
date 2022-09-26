@@ -2,7 +2,9 @@ from rest_framework import filters, status, viewsets, authentication, permission
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.db import transaction
+from datetime import datetime
 
 from .models import User, Question, Survey, SurveyResponse, Response, ResponseType, ResponseVariant
 from .serializers import (UserSerializer, RegisterSerializer, QuestionSerializer, SurveySerializer,
@@ -34,7 +36,7 @@ class ProfileView(APIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    parser_classes = (MultiPartParser,)
+    parser_classes = (MultiPartParser, FormParser)
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -45,6 +47,25 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class SurveyViewSet(viewsets.ModelViewSet):
     queryset = Survey.objects.all()
     serializer_class = SurveySerializer
+
+    @transaction.atomic()
+    def create(self, request, *args, **kwargs):
+        survey = Survey.objects.create(
+            title=request.data['title'],
+            description=request.data['description'],
+            author=request.user
+        )
+
+        question_list = [Question(
+            survey=survey,
+            text=question['text'],
+            response_type=ResponseType(question['response_type']),
+            attachment=question.get('attachment', None)
+        ) for question in request.data['questions']]
+
+        Question.objects.bulk_create(question_list)
+
+        return response.Response(status=status.HTTP_201_CREATED)
 
 
 class SurveyResponseViewSet(viewsets.ModelViewSet):
