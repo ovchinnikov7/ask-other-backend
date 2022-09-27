@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db import transaction
-from datetime import datetime
 
 from .models import User, Question, Survey, SurveyResponse, Response, ResponseType, ResponseVariant
 from .serializers import (UserSerializer, RegisterSerializer, QuestionSerializer, SurveySerializer,
@@ -56,14 +55,18 @@ class SurveyViewSet(viewsets.ModelViewSet):
             author=request.user
         )
 
-        question_list = [Question(
+        questions = Question.objects.bulk_create([Question(
             survey=survey,
             text=question['text'],
             response_type=ResponseType(question['response_type']),
             attachment=question.get('attachment', None)
-        ) for question in request.data['questions']]
+        ) for question in request.data['questions']])
 
-        Question.objects.bulk_create(question_list)
+        for idx, question_item in enumerate(request.data['questions']):
+            ResponseVariant.objects.bulk_create([ResponseVariant(
+                question=questions[idx],
+                text=response_variant
+            ) for response_variant in question_item.get('response_variants', [])])
 
         return response.Response(status=status.HTTP_201_CREATED)
 

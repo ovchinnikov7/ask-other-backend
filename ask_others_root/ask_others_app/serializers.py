@@ -1,7 +1,6 @@
 from rest_framework import serializers, status
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from datetime import datetime
 
 from .models import User, Question, Survey, SurveyResponse, Response, ResponseType, ResponseVariant
 
